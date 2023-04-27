@@ -1,0 +1,14 @@
+Hello, Michael,
+A new merchant has registered on your marketplace and is waiting for your approval
+
+- - - - - - - - - -
+Merchant Details
+{{ mail.merchant.name }}
+Company Name: {{ mail.merchant.name }}
+Contact Email: {{ mail.merchant.email }}
+Registration Date: {{ 'now'|date('d-m-Y') }}
+
+- - - - - - - - - -
+{{ 'mail.trans.footer.if_you_have_further_questions' | trans }}
+{{ 'mail.trans.footer.shopping_experience' | trans }}
+{{ 'mail.trans.footer.your_team' | trans }}
