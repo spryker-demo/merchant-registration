@@ -16,8 +16,12 @@ use Spryker\Zed\MerchantUser\Business\MerchantUserFacadeInterface;
 use Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
 use Spryker\Zed\User\Business\UserFacadeInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\Merchant;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrar;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUser;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface;
 use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationDependencyProvider;
 
 class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
@@ -28,11 +32,33 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     public function createMerchantRegistrar(): MerchantRegistrarInterface
     {
         return new MerchantRegistrar(
+            $this->createMerchant(),
+            $this->getMailFacade(),
+            $this->createMerchantUser(),
+            $this->getLocaleFacade(),
+        );
+    }
+
+    /**
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface
+     */
+    public function createMerchantUser(): MerchantUserInterface
+    {
+        return new MerchantUser(
             $this->getLocaleFacade(),
             $this->getMerchantUserFacade(),
-            $this->getStoreFacade(),
             $this->getUserFacade(),
-            $this->getMailFacade(),
+        );
+    }
+
+    /**
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface
+     */
+    public function createMerchant(): MerchantInterface
+    {
+        return new Merchant(
+            $this->getStoreFacade(),
+            $this->getLocaleFacade(),
             $this->getUtilTextService(),
             $this->getMerchantFacade(),
         );

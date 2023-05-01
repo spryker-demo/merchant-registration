@@ -19,6 +19,16 @@ use Spryker\Zed\Kernel\Communication\Controller\AbstractGatewayController;
 class GatewayController extends AbstractGatewayController
 {
     /**
+     * @var string
+     */
+    public const VALIDATION_MESSAGE_EMAIL = 'Merchant email already exists';
+
+    /**
+     * @var string
+     */
+    public const VALIDATION_MESSAGE_NAME = 'Company name already exists';
+
+    /**
      * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
@@ -53,7 +63,7 @@ class GatewayController extends AbstractGatewayController
 
         if ($merchantWithEmail) {
             $merchantErrorTransfer = new MerchantErrorTransfer();
-            $merchantErrorTransfer->setMessage('Merchant email data already exists');
+            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE_NAME);
             $merchantResponseTransfer->addError($merchantErrorTransfer);
         }
 
@@ -74,7 +84,7 @@ class GatewayController extends AbstractGatewayController
         $merchantWithEmail = $this->getFacade()->merchantExists($merchantCriteriaTransfer);
         if ($merchantWithEmail) {
             $merchantErrorTransfer = new MerchantErrorTransfer();
-            $merchantErrorTransfer->setMessage('Company name data already exists');
+            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE_NAME);
             $merchantResponseTransfer->addError($merchantErrorTransfer);
         }
 
