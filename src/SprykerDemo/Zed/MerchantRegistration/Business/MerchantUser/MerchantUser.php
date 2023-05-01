@@ -57,6 +57,7 @@ class MerchantUser implements MerchantUserInterface
 
     /**
      * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
+     * @param \Generated\Shared\Transfer\MerchantResponseTransfer $merchantResponseTransfer
      *
      * @return void
      */

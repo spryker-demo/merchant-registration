@@ -12,10 +12,11 @@ use Generated\Shared\Transfer\MerchantTransfer;
 
 interface MerchantUserInterface
 {
- /**
-  * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
-  *
-  * @return void
-  */
+    /**
+     * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
+     * @param \Generated\Shared\Transfer\MerchantResponseTransfer $merchantResponseTransfer
+     *
+     * @return void
+     */
     public function add(MerchantTransfer $merchantTransfer, MerchantResponseTransfer $merchantResponseTransfer): void;
 }
