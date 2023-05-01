@@ -12,6 +12,7 @@ use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Mail\Business\MailFacadeInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface;
 use SprykerDemo\Zed\MerchantRegistration\Communication\Plugin\Mail\MerchantRegistrationMailTypePlugin;
 
