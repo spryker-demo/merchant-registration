@@ -8,14 +8,13 @@
 namespace SprykerDemo\Zed\MerchantRegistration\Communication\Controller;
 
 use Generated\Shared\Transfer\MerchantCriteriaTransfer;
+use Generated\Shared\Transfer\MerchantErrorTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractGatewayController;
 
 /**
  * @method \SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrationFacadeInterface getFacade()
- * @method \SprykerDemo\Zed\MerchantRegistration\Communication\MerchantRegistrationCommunicationFactory getFactory()
- * @method \SprykerDemo\Zed\MerchantRegistration\Persistence\MerchantRegistrationRepositoryInterface getRepository()
  */
 class GatewayController extends AbstractGatewayController
 {
@@ -26,7 +25,60 @@ class GatewayController extends AbstractGatewayController
      */
     public function registerMerchantAction(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
+        $merchantResponseTransfer = $this->checkMerchantEmailUniqueConstraint($merchantTransfer);
+        $merchantResponseTransfer = $this->checkMerchantNameUniqueConstraint($merchantResponseTransfer, $merchantTransfer->getName());
+
+        $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
+        $merchantCriteriaTransfer->setName($merchantTransfer->getName());
+
+        if (count($merchantResponseTransfer->getErrors())) {
+            return $merchantResponseTransfer;
+        }
+
         return $this->getFacade()->merchantRegister($merchantTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
+     *
+     * @return \Generated\Shared\Transfer\MerchantResponseTransfer
+     */
+    protected function checkMerchantEmailUniqueConstraint(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
+    {
+        $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
+        $merchantCriteriaTransfer->setEmail($merchantTransfer->getEmail());
+        $merchantWithEmail = $this->getFacade()->merchantExists($merchantCriteriaTransfer);
+        $merchantResponseTransfer = new MerchantResponseTransfer();
+        $merchantResponseTransfer->setMerchant($merchantWithEmail);
+
+        if ($merchantWithEmail) {
+            $merchantErrorTransfer = new MerchantErrorTransfer();
+            $merchantErrorTransfer->setMessage('Merchant email data already exists');
+            $merchantResponseTransfer->addError($merchantErrorTransfer);
+        }
+
+        return $merchantResponseTransfer;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\MerchantResponseTransfer $merchantResponseTransfer
+     * @param string $name
+     *
+     * @return \Generated\Shared\Transfer\MerchantResponseTransfer
+     */
+    protected function checkMerchantNameUniqueConstraint(MerchantResponseTransfer $merchantResponseTransfer, string $name): MerchantResponseTransfer
+    {
+        $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
+        $merchantCriteriaTransfer->setName($name);
+
+        $merchantWithEmail = $this->getFacade()->merchantExists($merchantCriteriaTransfer);
+        if ($merchantWithEmail) {
+            $merchantErrorTransfer = new MerchantErrorTransfer();
+            $merchantErrorTransfer->setMessage('Company name data already exists');
+            $merchantResponseTransfer->addError($merchantErrorTransfer);
+        }
+
+        return $merchantResponseTransfer;
     }
 
     /**
