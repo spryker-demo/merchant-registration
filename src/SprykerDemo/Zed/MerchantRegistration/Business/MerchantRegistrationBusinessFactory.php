@@ -22,10 +22,15 @@ use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinder;
 use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinderInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrar;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailer;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailerInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreator;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface;
 use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationDependencyProvider;
 
+/**
+ * @method \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig getConfig()
+ */
 class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
 {
     /**
@@ -35,9 +40,8 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     {
         return new MerchantRegistrar(
             $this->createMerchantCreator(),
-            $this->getMailFacade(),
             $this->createMerchantUserCreator(),
-            $this->getLocaleFacade(),
+            $this->createMerchantRegistrarMailer(),
         );
     }
 
@@ -63,6 +67,18 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
             $this->getLocaleFacade(),
             $this->getUtilTextService(),
             $this->getMerchantFacade(),
+        );
+    }
+
+    /**
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailerInterface
+     */
+    public function createMerchantRegistrarMailer(): MerchantRegistrarMailerInterface
+    {
+        return new MerchantRegistrarMailer(
+            $this->getMailFacade(),
+            $this->getLocaleFacade(),
+            $this->getConfig(),
         );
     }
 

@@ -29,12 +29,10 @@ class MerchantFinder implements MerchantFinderInterface
     /**
      * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
      *
-     * @return \Generated\Shared\Transfer\MerchantTransfer
+     * @return \Generated\Shared\Transfer\MerchantTransfer|null
      */
-    public function find(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer
+    public function find(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
     {
-        $merchantTransfer = $this->merchantFacade->findOne($merchantCriteriaTransfer);
-
-        return $merchantTransfer ?? new MerchantTransfer();
+        return $this->merchantFacade->findOne($merchantCriteriaTransfer);
     }
 }

@@ -15,7 +15,7 @@ interface MerchantFinderInterface
     /**
      * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
      *
-     * @return \Generated\Shared\Transfer\MerchantTransfer
+     * @return \Generated\Shared\Transfer\MerchantTransfer|null
      */
-    public function find(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer;
+    public function find(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer;
 }

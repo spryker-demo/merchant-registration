@@ -10,9 +10,6 @@ namespace SprykerDemo\Zed\MerchantRegistration;
 use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
 
-/**
- * @method \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig getConfig()
- */
 class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyProvider
 {
     /**
@@ -24,6 +21,11 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
      * @var string
      */
     public const FACADE_LOCALE = 'FACADE_LOCALE';
+
+    /**
+     * @var string
+     */
+    public const FACADE_GLOSSARY = 'FACADE_GLOSSARY';
 
     /**
      * @var string
@@ -65,6 +67,19 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
         $container = $this->addMailFacade($container);
         $container = $this->addUtilTextService($container);
         $container = $this->addMerchantFacade($container);
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    public function provideCommunicationLayerDependencies(Container $container): Container
+    {
+        $container = parent::provideCommunicationLayerDependencies($container);
+        $container = $this->addGlossaryFacade($container);
 
         return $container;
     }
@@ -162,6 +177,20 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     {
         $container->set(static::FACADE_MERCHANT, function (Container $container) {
             return $container->getLocator()->merchant()->facade();
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addGlossaryFacade(Container $container): Container
+    {
+        $container->set(static::FACADE_GLOSSARY, function (Container $container) {
+            return $container->getLocator()->glossary()->facade();
         });
 
         return $container;

@@ -7,15 +7,14 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar;
 
-use Generated\Shared\Transfer\MailTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
-use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
-use Spryker\Zed\Mail\Business\MailFacadeInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface;
-use SprykerDemo\Zed\MerchantRegistration\Communication\Plugin\Mail\MerchantRegistrationMailTypePlugin;
 
+/**
+ * @method \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig getConfig
+ */
 class MerchantRegistrar implements MerchantRegistrarInterface
 {
     /**
@@ -31,33 +30,28 @@ class MerchantRegistrar implements MerchantRegistrarInterface
     protected MerchantCreatorInterface $merchantCreator;
 
     /**
-     * @var \Spryker\Zed\Mail\Business\MailFacadeInterface
-     */
-    protected MailFacadeInterface $mailFacade;
-
-    /**
      * @var \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface
      */
     protected MerchantUserCreatorInterface $merchantUserCreator;
 
-    protected LocaleFacadeInterface $localeFacade;
+    /**
+     * @var \SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailerInterface
+     */
+    protected MerchantRegistrarMailerInterface $merchantRegistrarMailer;
 
     /**
      * @param \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface $merchantCreator
-     * @param \Spryker\Zed\Mail\Business\MailFacadeInterface $mailFacade
      * @param \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface $merchantUserCreator
-     * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
+     * @param \SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailerInterface $merchantRegistrarMailer
      */
     public function __construct(
         MerchantCreatorInterface $merchantCreator,
-        MailFacadeInterface $mailFacade,
         MerchantUserCreatorInterface $merchantUserCreator,
-        LocaleFacadeInterface $localeFacade
+        MerchantRegistrarMailerInterface $merchantRegistrarMailer
     ) {
         $this->merchantCreator = $merchantCreator;
-        $this->mailFacade = $mailFacade;
         $this->merchantUserCreator = $merchantUserCreator;
-        $this->localeFacade = $localeFacade;
+        $this->merchantRegistrarMailer = $merchantRegistrarMailer;
     }
 
     /**
@@ -69,23 +63,8 @@ class MerchantRegistrar implements MerchantRegistrarInterface
     {
         $merchantResponseTransfer = $this->merchantCreator->create($merchantTransfer);
         $this->merchantUserCreator->create($merchantTransfer, $merchantResponseTransfer);
-        $this->sendRegistrationEmail($merchantTransfer);
+        $this->merchantRegistrarMailer->sendRegistrationEmail($merchantTransfer);
 
         return $merchantResponseTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
-     *
-     * @return void
-     */
-    public function sendRegistrationEmail(MerchantTransfer $merchantTransfer): void
-    {
-        $mailTransfer = new MailTransfer();
-        $mailTransfer->setType(MerchantRegistrationMailTypePlugin::MAIL_TYPE);
-        $mailTransfer->setMerchant($merchantTransfer);
-        $mailTransfer->setLocale($this->localeFacade->getCurrentLocale());
-
-        $this->mailFacade->handleMail($mailTransfer);
     }
 }

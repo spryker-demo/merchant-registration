@@ -5,9 +5,12 @@
     "license": "proprietary",
     "require": {
         "php": ">=8.0",
+        "spryker/application": "^3.30.1",
+        "spryker/glossary": "^3.11.6",
         "spryker/kernel": "^3.30.0",
         "spryker/locale": "^3.8.1",
         "spryker/mail": "^4.10.0",
+        "spryker/mail-extension": "*",
         "spryker/merchant": "^3.5.1",
         "spryker/merchant-user": "^1.1.0",
         "spryker/state-machine": "^2.16.1",

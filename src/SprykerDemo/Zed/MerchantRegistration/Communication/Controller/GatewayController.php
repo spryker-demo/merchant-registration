@@ -63,7 +63,7 @@ class GatewayController extends AbstractGatewayController
 
         if ($merchantWithEmail) {
             $merchantErrorTransfer = new MerchantErrorTransfer();
-            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE_NAME);
+            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE_EMAIL);
             $merchantResponseTransfer->addError($merchantErrorTransfer);
         }
 
