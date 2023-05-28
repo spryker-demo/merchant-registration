@@ -5,20 +5,19 @@
     "license": "proprietary",
     "require": {
         "php": ">=8.0",
-        "spryker/zed-request": "*",
-        "spryker/merchant": "*",
-        "spryker/merchant-user": "*",
-        "spryker/mail": "*",
-        "spryker/util-text": "*",
-        "spryker/user": "*",
-        "spryker/merchant-user": "*",
-        "spryker/locale": "*",
-        "spryker/store": "*",
-        "spryker/kernel": "^3.30.0"
+        "spryker/kernel": "^3.30.0",
+        "spryker/locale": "^3.8.1",
+        "spryker/mail": "^4.10.0",
+        "spryker/merchant": "^3.5.1",
+        "spryker/merchant-user": "^1.1.0",
+        "spryker/state-machine": "^2.16.1",
+        "spryker/store": "^1.16.1",
+        "spryker/user": "^3.14.1",
+        "spryker/util-text": "^1.5.1",
+        "spryker/zed-request": "^3.18.1"
     },
     "require-dev": {
-        "spryker/code-sniffer": "*",
-        "spryker/testify": "*"
+        "spryker/code-sniffer": "^0.17.18"
     },
     "autoload": {
         "psr-4": {
