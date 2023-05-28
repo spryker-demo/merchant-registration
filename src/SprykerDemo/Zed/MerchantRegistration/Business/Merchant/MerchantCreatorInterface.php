@@ -10,12 +10,12 @@ namespace SprykerDemo\Zed\MerchantRegistration\Business\Merchant;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 
-interface MerchantInterface
+interface MerchantCreatorInterface
 {
     /**
      * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    public function add(MerchantTransfer $merchantTransfer): MerchantResponseTransfer;
+    public function create(MerchantTransfer $merchantTransfer): MerchantResponseTransfer;
 }

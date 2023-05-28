@@ -15,7 +15,7 @@ interface MerchantRegistrationClientInterface
 {
     /**
      * Specification:
-     * - Finds merchant according to the criteria sent in merchantCriteriaTransfer.
+     * - Registers new merchant.
      *
      * @api
      *
@@ -27,7 +27,7 @@ interface MerchantRegistrationClientInterface
 
     /**
      * Specification:
-     * - Finds merchant according to the criteria sent in merchantCriteriaTransfer.
+     * - Gets merchant according to the criteria sent in merchantCriteriaTransfer.
      *
      * @api
      *
@@ -35,5 +35,5 @@ interface MerchantRegistrationClientInterface
      *
      * @return \Generated\Shared\Transfer\MerchantTransfer
      */
-    public function merchantExists(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer;
+    public function getMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer;
 }

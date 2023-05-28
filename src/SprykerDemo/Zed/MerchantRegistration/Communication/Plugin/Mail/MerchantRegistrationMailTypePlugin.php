@@ -45,8 +45,7 @@ class MerchantRegistrationMailTypePlugin extends AbstractPlugin implements MailT
      */
     public function build(MailBuilderInterface $mailBuilder)
     {
-        $this
-            ->setSubject($mailBuilder)
+        $this->setSubject($mailBuilder)
             ->setHtmlTemplate($mailBuilder)
             ->setTextTemplate($mailBuilder)
             ->setSender($mailBuilder)

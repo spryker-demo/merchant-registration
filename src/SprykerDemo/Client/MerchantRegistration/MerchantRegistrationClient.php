@@ -42,10 +42,10 @@ class MerchantRegistrationClient extends AbstractClient implements MerchantRegis
      *
      * @return \Generated\Shared\Transfer\MerchantTransfer
      */
-    public function merchantExists(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer
+    public function getMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer
     {
          return $this->getFactory()
             ->createZedStub()
-            ->merchantExists($merchantCriteriaTransfer);
+            ->getMerchant($merchantCriteriaTransfer);
     }
 }

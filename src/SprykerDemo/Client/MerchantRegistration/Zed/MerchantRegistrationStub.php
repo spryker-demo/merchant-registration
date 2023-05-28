@@ -45,10 +45,10 @@ class MerchantRegistrationStub implements MerchantRegistrationStubInterface
      *
      * @return \Generated\Shared\Transfer\MerchantTransfer|null
      */
-    public function merchantExists(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
+    public function getMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
     {
         /** @var \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer */
-        $merchantTransfer = $this->zedRequestClient->call('/merchant-registration/gateway/merchant-exists', $merchantCriteriaTransfer, null);
+        $merchantTransfer = $this->zedRequestClient->call('/merchant-registration/gateway/get-merchant', $merchantCriteriaTransfer, null);
 
         return $merchantTransfer;
     }

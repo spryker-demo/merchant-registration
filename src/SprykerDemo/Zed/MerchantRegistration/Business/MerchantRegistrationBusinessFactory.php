@@ -16,12 +16,14 @@ use Spryker\Zed\MerchantUser\Business\MerchantUserFacadeInterface;
 use Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
 use Spryker\Zed\User\Business\UserFacadeInterface;
-use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\Merchant;
-use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreator;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinder;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinderInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrar;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarInterface;
-use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUser;
-use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreator;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface;
 use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationDependencyProvider;
 
 class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
@@ -32,19 +34,19 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     public function createMerchantRegistrar(): MerchantRegistrarInterface
     {
         return new MerchantRegistrar(
-            $this->createMerchant(),
+            $this->createMerchantCreator(),
             $this->getMailFacade(),
-            $this->createMerchantUser(),
+            $this->createMerchantUserCreator(),
             $this->getLocaleFacade(),
         );
     }
 
     /**
-     * @return \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface
      */
-    public function createMerchantUser(): MerchantUserInterface
+    public function createMerchantUserCreator(): MerchantUserCreatorInterface
     {
-        return new MerchantUser(
+        return new MerchantUserCreator(
             $this->getLocaleFacade(),
             $this->getMerchantUserFacade(),
             $this->getUserFacade(),
@@ -52,14 +54,24 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface
      */
-    public function createMerchant(): MerchantInterface
+    public function createMerchantCreator(): MerchantCreatorInterface
     {
-        return new Merchant(
+        return new MerchantCreator(
             $this->getStoreFacade(),
             $this->getLocaleFacade(),
             $this->getUtilTextService(),
+            $this->getMerchantFacade(),
+        );
+    }
+
+    /**
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinderInterface
+     */
+    public function createMerchantFinder(): MerchantFinderInterface
+    {
+        return new MerchantFinder(
             $this->getMerchantFacade(),
         );
     }

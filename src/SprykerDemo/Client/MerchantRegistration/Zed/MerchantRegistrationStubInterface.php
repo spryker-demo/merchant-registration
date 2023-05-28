@@ -25,5 +25,5 @@ interface MerchantRegistrationStubInterface
      *
      * @return \Generated\Shared\Transfer\MerchantTransfer|null
      */
-    public function merchantExists(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer;
+    public function getMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer;
 }

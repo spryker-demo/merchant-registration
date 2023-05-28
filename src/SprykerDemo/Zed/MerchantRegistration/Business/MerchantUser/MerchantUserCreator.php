@@ -16,7 +16,7 @@ use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\MerchantUser\Business\MerchantUserFacadeInterface;
 use Spryker\Zed\User\Business\UserFacadeInterface;
 
-class MerchantUser implements MerchantUserInterface
+class MerchantUserCreator implements MerchantUserCreatorInterface
 {
     /**
      * @uses \Orm\Zed\User\Persistence\Map\SpyUserTableMap::COL_STATUS_ACTIVE
@@ -61,7 +61,7 @@ class MerchantUser implements MerchantUserInterface
      *
      * @return void
      */
-    public function add(MerchantTransfer $merchantTransfer, MerchantResponseTransfer $merchantResponseTransfer): void
+    public function create(MerchantTransfer $merchantTransfer, MerchantResponseTransfer $merchantResponseTransfer): void
     {
         $merchantUserResponseTransfer = $this->createMerchantUserTransfer($merchantResponseTransfer, $merchantTransfer);
         if ($merchantUserResponseTransfer->getMerchantUser()) {

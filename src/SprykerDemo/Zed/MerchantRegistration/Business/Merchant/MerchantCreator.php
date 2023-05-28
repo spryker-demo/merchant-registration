@@ -16,7 +16,7 @@ use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
 
-class Merchant implements MerchantInterface
+class MerchantCreator implements MerchantCreatorInterface
 {
     /**
      * @var \Spryker\Zed\Store\Business\StoreFacadeInterface
@@ -61,7 +61,7 @@ class Merchant implements MerchantInterface
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    public function add(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
+    public function create(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
         $merchantTransfer = $this->setStoreIdsByStoreName($merchantTransfer);
         $merchantTransfer = $this->expandMerchantWithUrls($merchantTransfer);

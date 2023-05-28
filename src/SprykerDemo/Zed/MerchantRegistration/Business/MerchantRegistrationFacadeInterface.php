@@ -23,11 +23,12 @@ interface MerchantRegistrationFacadeInterface
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    public function merchantRegister(MerchantTransfer $merchantTransfer): MerchantResponseTransfer;
+    public function registerMerchant(MerchantTransfer $merchantTransfer): MerchantResponseTransfer;
 
     /**
      * Specification:
      * - Finds merchant according to the criteria sent in merchantCriteriaTransfer.
+     * - Returns an empty MerchantTransfer if no available statuses exist
      *
      * @api
      *
@@ -35,5 +36,5 @@ interface MerchantRegistrationFacadeInterface
      *
      * @return \Generated\Shared\Transfer\MerchantTransfer|null
      */
-    public function merchantExists(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer;
+    public function findMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer;
 }

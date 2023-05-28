@@ -45,7 +45,7 @@ class GatewayController extends AbstractGatewayController
             return $merchantResponseTransfer;
         }
 
-        return $this->getFacade()->merchantRegister($merchantTransfer);
+        return $this->getFacade()->registerMerchant($merchantTransfer);
     }
 
     /**
@@ -57,7 +57,7 @@ class GatewayController extends AbstractGatewayController
     {
         $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
         $merchantCriteriaTransfer->setEmail($merchantTransfer->getEmail());
-        $merchantWithEmail = $this->getFacade()->merchantExists($merchantCriteriaTransfer);
+        $merchantWithEmail = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
         $merchantResponseTransfer = new MerchantResponseTransfer();
         $merchantResponseTransfer->setMerchant($merchantWithEmail);
 
@@ -81,7 +81,7 @@ class GatewayController extends AbstractGatewayController
         $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
         $merchantCriteriaTransfer->setName($name);
 
-        $merchantWithEmail = $this->getFacade()->merchantExists($merchantCriteriaTransfer);
+        $merchantWithEmail = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
         if ($merchantWithEmail) {
             $merchantErrorTransfer = new MerchantErrorTransfer();
             $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE_NAME);
@@ -96,14 +96,8 @@ class GatewayController extends AbstractGatewayController
      *
      * @return \Generated\Shared\Transfer\MerchantTransfer
      */
-    public function merchantExistsAction(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer
+    public function getMerchantAction(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer
     {
-        $merchantTransfer = $this->getFacade()->merchantExists($merchantCriteriaTransfer);
-
-        if ($merchantTransfer === null) {
-            return new MerchantTransfer();
-        }
-
-        return $merchantTransfer;
+        return $this->getFacade()->findMerchant($merchantCriteriaTransfer);
     }
 }

@@ -26,7 +26,7 @@ class MerchantRegistrationFacade extends AbstractFacade implements MerchantRegis
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    public function merchantRegister(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
+    public function registerMerchant(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
         return $this->getFactory()
             ->createMerchantRegistrar()
@@ -42,10 +42,10 @@ class MerchantRegistrationFacade extends AbstractFacade implements MerchantRegis
      *
      * @return \Generated\Shared\Transfer\MerchantTransfer|null
      */
-    public function merchantExists(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
+    public function findMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
     {
         return $this->getFactory()
-            ->getMerchantFacade()
-            ->findOne($merchantCriteriaTransfer);
+            ->createMerchantFinder()
+            ->find($merchantCriteriaTransfer);
     }
 }

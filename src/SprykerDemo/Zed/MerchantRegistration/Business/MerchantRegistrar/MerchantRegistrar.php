@@ -12,8 +12,8 @@ use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Mail\Business\MailFacadeInterface;
-use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface;
-use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface;
 use SprykerDemo\Zed\MerchantRegistration\Communication\Plugin\Mail\MerchantRegistrationMailTypePlugin;
 
 class MerchantRegistrar implements MerchantRegistrarInterface
@@ -26,9 +26,9 @@ class MerchantRegistrar implements MerchantRegistrarInterface
     protected const USER_STATUS_ACTIVE = 'active';
 
     /**
-     * @var \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface
+     * @var \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface
      */
-    protected MerchantInterface $merchant;
+    protected MerchantCreatorInterface $merchantCreator;
 
     /**
      * @var \Spryker\Zed\Mail\Business\MailFacadeInterface
@@ -36,27 +36,27 @@ class MerchantRegistrar implements MerchantRegistrarInterface
     protected MailFacadeInterface $mailFacade;
 
     /**
-     * @var \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface
+     * @var \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface
      */
-    protected MerchantUserInterface $merchantUser;
+    protected MerchantUserCreatorInterface $merchantUserCreator;
 
     protected LocaleFacadeInterface $localeFacade;
 
     /**
-     * @param \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantInterface $merchant
+     * @param \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface $merchantCreator
      * @param \Spryker\Zed\Mail\Business\MailFacadeInterface $mailFacade
-     * @param \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserInterface $merchantUser
+     * @param \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface $merchantUserCreator
      * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
      */
     public function __construct(
-        MerchantInterface $merchant,
+        MerchantCreatorInterface $merchantCreator,
         MailFacadeInterface $mailFacade,
-        MerchantUserInterface $merchantUser,
+        MerchantUserCreatorInterface $merchantUserCreator,
         LocaleFacadeInterface $localeFacade
     ) {
-        $this->merchant = $merchant;
+        $this->merchantCreator = $merchantCreator;
         $this->mailFacade = $mailFacade;
-        $this->merchantUser = $merchantUser;
+        $this->merchantUserCreator = $merchantUserCreator;
         $this->localeFacade = $localeFacade;
     }
 
@@ -67,8 +67,8 @@ class MerchantRegistrar implements MerchantRegistrarInterface
      */
     public function registerMerchant(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
-        $merchantResponseTransfer = $this->merchant->add($merchantTransfer);
-        $this->merchantUser->add($merchantTransfer, $merchantResponseTransfer);
+        $merchantResponseTransfer = $this->merchantCreator->create($merchantTransfer);
+        $this->merchantUserCreator->create($merchantTransfer, $merchantResponseTransfer);
         $this->sendRegistrationEmail($merchantTransfer);
 
         return $merchantResponseTransfer;
