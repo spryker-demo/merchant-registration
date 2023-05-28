@@ -36,7 +36,9 @@ class GatewayController extends AbstractGatewayController
     public function registerMerchantAction(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
         $merchantResponseTransfer = $this->checkMerchantEmailUniqueConstraint($merchantTransfer);
-        $merchantResponseTransfer = $this->checkMerchantNameUniqueConstraint($merchantResponseTransfer, $merchantTransfer->getName());
+        if ($merchantTransfer->getName()) {
+            $merchantResponseTransfer = $this->checkMerchantNameUniqueConstraint($merchantResponseTransfer, $merchantTransfer->getName());
+        }
 
         $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
         $merchantCriteriaTransfer->setName($merchantTransfer->getName());
@@ -94,9 +96,9 @@ class GatewayController extends AbstractGatewayController
     /**
      * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
      *
-     * @return \Generated\Shared\Transfer\MerchantTransfer
+     * @return \Generated\Shared\Transfer\MerchantTransfer|null
      */
-    public function getMerchantAction(MerchantCriteriaTransfer $merchantCriteriaTransfer): MerchantTransfer
+    public function getMerchantAction(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
     {
         return $this->getFacade()->findMerchant($merchantCriteriaTransfer);
     }

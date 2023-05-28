@@ -13,7 +13,7 @@ use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterf
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface;
 
 /**
- * @method \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig getConfig
+ * @method \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig getConfig()
  */
 class MerchantRegistrar implements MerchantRegistrarInterface
 {

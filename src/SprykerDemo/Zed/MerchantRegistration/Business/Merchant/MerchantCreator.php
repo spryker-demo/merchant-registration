@@ -81,7 +81,7 @@ class MerchantCreator implements MerchantCreatorInterface
 
         $idStore = $this->getIdStore($storeRelationTransfer);
 
-        if ($merchantTransfer->getStoreRelation()) {
+        if ($idStore && $merchantTransfer->getStoreRelation()) {
             $merchantTransfer->getStoreRelation()->setIdStores([$idStore]);
         }
 
@@ -91,9 +91,9 @@ class MerchantCreator implements MerchantCreatorInterface
     /**
      * @param \Generated\Shared\Transfer\StoreRelationTransfer $storeRelationTransfer
      *
-     * @return int
+     * @return int|null
      */
-    protected function getIdStore(StoreRelationTransfer $storeRelationTransfer): int
+    protected function getIdStore(StoreRelationTransfer $storeRelationTransfer): ?int
     {
         return $this->storeFacade->getStoreByName($storeRelationTransfer->getStores()[0]->getName())->getIdStore();
     }
@@ -108,17 +108,19 @@ class MerchantCreator implements MerchantCreatorInterface
         $utilTextService = $this->utilTextService;
         $localeFacade = $this->localeFacade;
 
-        $merchantTransfer->addUrl(
-            (new UrlTransfer())
-                ->setUrl('/en/merchant/' . $utilTextService->generateSlug($merchantTransfer->getName()))
-                ->setFkLocale($localeFacade->getLocale('en_US')->getIdLocale()),
-        );
+        if ($merchantTransfer->getName()) {
+            $merchantTransfer->addUrl(
+                (new UrlTransfer())
+                    ->setUrl('/en/merchant/' . $utilTextService->generateSlug($merchantTransfer->getName()))
+                    ->setFkLocale($localeFacade->getLocale('en_US')->getIdLocale()),
+            );
 
-        $merchantTransfer->addUrl(
-            (new UrlTransfer())
-                ->setUrl('/de/merchant/' . $utilTextService->generateSlug($merchantTransfer->getName()))
-                ->setFkLocale($localeFacade->getLocale('de_DE')->getIdLocale()),
-        );
+            $merchantTransfer->addUrl(
+                (new UrlTransfer())
+                    ->setUrl('/de/merchant/' . $utilTextService->generateSlug($merchantTransfer->getName()))
+                    ->setFkLocale($localeFacade->getLocale('de_DE')->getIdLocale()),
+            );
+        }
 
         return $merchantTransfer;
     }
