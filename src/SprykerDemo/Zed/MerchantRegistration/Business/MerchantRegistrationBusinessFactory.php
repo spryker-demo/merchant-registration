@@ -7,6 +7,7 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business;
 
+use Orm\Zed\Merchant\Persistence\SpyMerchantQuery;
 use Spryker\Service\UtilText\UtilTextServiceInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
@@ -87,7 +88,7 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     public function createMerchantFinder(): MerchantFinderInterface
     {
         return new MerchantFinder(
-            $this->getMerchantFacade(),
+            $this->getPropelMerchantQuery(),
         );
     }
 
@@ -145,5 +146,13 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     public function getMerchantFacade(): MerchantFacadeInterface
     {
         return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::FACADE_MERCHANT);
+    }
+
+    /**
+     * @return \Orm\Zed\Merchant\Persistence\SpyMerchantQuery
+     */
+    public function getPropelMerchantQuery(): SpyMerchantQuery
+    {
+        return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::PROPEL_MERCHANT_QUERY);
     }
 }

@@ -7,6 +7,7 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration;
 
+use Orm\Zed\Merchant\Persistence\SpyMerchantQuery;
 use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
 
@@ -53,6 +54,11 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     public const SERVICE_UTIL_TEXT = 'SERVICE_UTIL_TEXT';
 
     /**
+     * @var string
+     */
+    public const PROPEL_MERCHANT_QUERY = 'PROPEL_MERCHANT_QUERY';
+
+    /**
      * @param \Spryker\Zed\Kernel\Container $container
      *
      * @return \Spryker\Zed\Kernel\Container
@@ -67,6 +73,7 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
         $container = $this->addMailFacade($container);
         $container = $this->addUtilTextService($container);
         $container = $this->addMerchantFacade($container);
+        $container = $this->addPropelMerchantQuery($container);
 
         return $container;
     }
@@ -191,6 +198,20 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     {
         $container->set(static::FACADE_GLOSSARY, function (Container $container) {
             return $container->getLocator()->glossary()->facade();
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addPropelMerchantQuery(Container $container): Container
+    {
+        $container->set(static::PROPEL_MERCHANT_QUERY, function (Container $container) {
+            return SpyMerchantQuery::create();
         });
 
         return $container;

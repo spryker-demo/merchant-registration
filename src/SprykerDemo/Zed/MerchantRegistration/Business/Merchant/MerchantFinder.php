@@ -9,21 +9,21 @@ namespace SprykerDemo\Zed\MerchantRegistration\Business\Merchant;
 
 use Generated\Shared\Transfer\MerchantCriteriaTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
-use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
+use Orm\Zed\Merchant\Persistence\SpyMerchantQuery;
 
 class MerchantFinder implements MerchantFinderInterface
 {
  /**
-  * @var \Spryker\Zed\Merchant\Business\MerchantFacadeInterface
+  * @var \Orm\Zed\Merchant\Persistence\SpyMerchantQuery
   */
-    protected MerchantFacadeInterface $merchantFacade;
+    protected SpyMerchantQuery $spyMerchantQuery;
 
     /**
-     * @param \Spryker\Zed\Merchant\Business\MerchantFacadeInterface $merchantFacade
+     * @param \Orm\Zed\Merchant\Persistence\SpyMerchantQuery $spyMerchantQuery
      */
-    public function __construct(MerchantFacadeInterface $merchantFacade)
+    public function __construct(SpyMerchantQuery $spyMerchantQuery)
     {
-        $this->merchantFacade = $merchantFacade;
+        $this->spyMerchantQuery = $spyMerchantQuery;
     }
 
     /**
@@ -33,6 +33,24 @@ class MerchantFinder implements MerchantFinderInterface
      */
     public function find(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
     {
-        return $this->merchantFacade->findOne($merchantCriteriaTransfer);
+        $merchantQuery = $this->spyMerchantQuery;
+
+        if ($merchantCriteriaTransfer->getEmail()) {
+            $merchantQuery->filterByEmail($merchantCriteriaTransfer->getEmail());
+        }
+        if ($merchantCriteriaTransfer->getName()) {
+            $merchantQuery->_or()
+                ->filterByName_Like($merchantCriteriaTransfer->getName());
+        }
+        $merchantEntity = $merchantQuery->findOne();
+        if ($merchantEntity) {
+            $merchantTransfer = new MerchantTransfer();
+            $merchantTransfer->setEmail($merchantCriteriaTransfer->getEmail());
+            $merchantTransfer->setName('%' . $merchantCriteriaTransfer->getName() . '%');
+
+            return $merchantTransfer;
+        }
+
+        return null;
     }
 }

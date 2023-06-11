@@ -53,11 +53,11 @@ class GatewayController extends AbstractGatewayController
         $merchantCriteriaTransfer->setEmail($merchantTransfer->getEmail());
         $merchantCriteriaTransfer->setName($merchantTransfer->getName());
 
-        $merchantTransfer = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
+        $merchant = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
         $merchantResponseTransfer = new MerchantResponseTransfer();
         $merchantResponseTransfer->setMerchant($merchantTransfer);
 
-        if ($merchantTransfer) {
+        if ($merchant) {
             $merchantErrorTransfer = new MerchantErrorTransfer();
             $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE);
             $merchantResponseTransfer->addError($merchantErrorTransfer);
