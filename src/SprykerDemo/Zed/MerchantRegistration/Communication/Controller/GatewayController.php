@@ -21,12 +21,7 @@ class GatewayController extends AbstractGatewayController
     /**
      * @var string
      */
-    public const VALIDATION_MESSAGE_EMAIL = 'Merchant email already exists';
-
-    /**
-     * @var string
-     */
-    public const VALIDATION_MESSAGE_NAME = 'Company name already exists';
+    public const VALIDATION_MESSAGE = 'Merchant email and Company name must be unique!';
 
     /**
      * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
@@ -35,10 +30,7 @@ class GatewayController extends AbstractGatewayController
      */
     public function registerMerchantAction(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
-        $merchantResponseTransfer = $this->checkMerchantEmailUniqueConstraint($merchantTransfer);
-        if ($merchantTransfer->getName()) {
-            $merchantResponseTransfer = $this->checkMerchantNameUniqueConstraint($merchantResponseTransfer, $merchantTransfer->getName());
-        }
+        $merchantResponseTransfer = $this->checkMerchantUniqueConstraint($merchantTransfer);
 
         $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
         $merchantCriteriaTransfer->setName($merchantTransfer->getName());
@@ -55,51 +47,22 @@ class GatewayController extends AbstractGatewayController
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    protected function checkMerchantEmailUniqueConstraint(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
+    protected function checkMerchantUniqueConstraint(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
         $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
         $merchantCriteriaTransfer->setEmail($merchantTransfer->getEmail());
-        $merchantWithEmail = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
+        $merchantCriteriaTransfer->setName($merchantTransfer->getName());
+
+        $merchantTransfer = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
         $merchantResponseTransfer = new MerchantResponseTransfer();
-        $merchantResponseTransfer->setMerchant($merchantWithEmail);
+        $merchantResponseTransfer->setMerchant($merchantTransfer);
 
-        if ($merchantWithEmail) {
+        if ($merchantTransfer) {
             $merchantErrorTransfer = new MerchantErrorTransfer();
-            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE_EMAIL);
+            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE);
             $merchantResponseTransfer->addError($merchantErrorTransfer);
         }
 
         return $merchantResponseTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\MerchantResponseTransfer $merchantResponseTransfer
-     * @param string $name
-     *
-     * @return \Generated\Shared\Transfer\MerchantResponseTransfer
-     */
-    protected function checkMerchantNameUniqueConstraint(MerchantResponseTransfer $merchantResponseTransfer, string $name): MerchantResponseTransfer
-    {
-        $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
-        $merchantCriteriaTransfer->setName($name);
-
-        $merchantWithEmail = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
-        if ($merchantWithEmail) {
-            $merchantErrorTransfer = new MerchantErrorTransfer();
-            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE_NAME);
-            $merchantResponseTransfer->addError($merchantErrorTransfer);
-        }
-
-        return $merchantResponseTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
-     *
-     * @return \Generated\Shared\Transfer\MerchantTransfer|null
-     */
-    public function getMerchantAction(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
-    {
-        return $this->getFacade()->findMerchant($merchantCriteriaTransfer);
     }
 }

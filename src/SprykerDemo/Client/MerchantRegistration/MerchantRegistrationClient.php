@@ -7,7 +7,6 @@
 
 namespace SprykerDemo\Client\MerchantRegistration;
 
-use Generated\Shared\Transfer\MerchantCriteriaTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Spryker\Client\Kernel\AbstractClient;
@@ -31,21 +30,5 @@ class MerchantRegistrationClient extends AbstractClient implements MerchantRegis
         return $this->getFactory()
             ->createZedStub()
             ->registerMerchant($merchantTransfer);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @api
-     *
-     * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
-     *
-     * @return \Generated\Shared\Transfer\MerchantTransfer|null
-     */
-    public function getMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
-    {
-         return $this->getFactory()
-            ->createZedStub()
-            ->getMerchant($merchantCriteriaTransfer);
     }
 }

@@ -7,7 +7,6 @@
 
 namespace SprykerDemo\Client\MerchantRegistration\Zed;
 
-use Generated\Shared\Transfer\MerchantCriteriaTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Spryker\Client\ZedRequest\ZedRequestClientInterface;
@@ -38,18 +37,5 @@ class MerchantRegistrationStub implements MerchantRegistrationStubInterface
         $merchantResponseTransfer = $this->zedRequestClient->call('/merchant-registration/gateway/register-merchant', $merchantTransfer, null);
 
         return $merchantResponseTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
-     *
-     * @return \Generated\Shared\Transfer\MerchantTransfer|null
-     */
-    public function getMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
-    {
-        /** @var \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer */
-        $merchantTransfer = $this->zedRequestClient->call('/merchant-registration/gateway/get-merchant', $merchantCriteriaTransfer, null);
-
-        return $merchantTransfer;
     }
 }

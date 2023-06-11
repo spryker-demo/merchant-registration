@@ -17,12 +17,13 @@ use Spryker\Zed\MailExtension\Dependency\Plugin\MailTypeBuilderPluginInterface;
 /**
  * @method \SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrationFacadeInterface getFacade()
  * @method \SprykerDemo\Zed\MerchantRegistration\Communication\MerchantRegistrationCommunicationFactory getFactory()
+ * @method \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig getConfig()
  */
 class MerchantRegistrationMailTypePlugin extends AbstractPlugin implements MailTypeBuilderPluginInterface
 {
- /**
-  * @var string
-  */
+    /**
+     * @var string
+     */
     public const MAIL_TYPE = 'merchant registration mail';
 
     /**
@@ -80,8 +81,8 @@ class MerchantRegistrationMailTypePlugin extends AbstractPlugin implements MailT
             )
             ->addRecipient(
                 (new MailRecipientTransfer())
-                    ->setEmail('karl.bischoff@spryker.com')
-                    ->setName('Karl'),
+                    ->setEmail($this->getConfig()->getMerchantRegistrationRecipientEmail())
+                    ->setName($this->getConfig()->getMerchantRegistrationRecipientName()),
             );
     }
 

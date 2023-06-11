@@ -7,7 +7,6 @@
 
 namespace SprykerDemo\Client\MerchantRegistration\Zed;
 
-use Generated\Shared\Transfer\MerchantCriteriaTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 
@@ -19,11 +18,4 @@ interface MerchantRegistrationStubInterface
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
     public function registerMerchant(MerchantTransfer $merchantTransfer): MerchantResponseTransfer;
-
-    /**
-     * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
-     *
-     * @return \Generated\Shared\Transfer\MerchantTransfer|null
-     */
-    public function getMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer;
 }
