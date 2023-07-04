@@ -67,6 +67,7 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
             $this->getLocaleFacade(),
             $this->getUtilTextService(),
             $this->getMerchantFacade(),
+            $this->getConfig(),
         );
     }
 

@@ -14,6 +14,21 @@ use SprykerDemo\Shared\MerchantRegistration\MerchantRegistrationConstants;
 class MerchantRegistrationConfig extends AbstractBundleConfig
 {
     /**
+     * @var string
+     */
+    protected const PREFIX_MERCHANT_URL = 'merchant';
+
+    /**
+     * @api
+     *
+     * @return string
+     */
+    public function getMerchantUrlPrefix(): string
+    {
+        return static::PREFIX_MERCHANT_URL;
+    }
+
+    /**
      * @api
      *
      * @return string

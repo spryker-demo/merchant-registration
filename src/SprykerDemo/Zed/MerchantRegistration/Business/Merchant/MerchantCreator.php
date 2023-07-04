@@ -7,6 +7,7 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business\Merchant;
 
+use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Generated\Shared\Transfer\StoreRelationTransfer;
@@ -15,6 +16,7 @@ use Spryker\Service\UtilText\UtilTextServiceInterface;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
+use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig;
 
 class MerchantCreator implements MerchantCreatorInterface
 {
@@ -48,12 +50,14 @@ class MerchantCreator implements MerchantCreatorInterface
         StoreFacadeInterface $storeFacade,
         LocaleFacadeInterface $localeFacade,
         UtilTextServiceInterface $utilTextService,
-        MerchantFacadeInterface $merchantFacade
+        MerchantFacadeInterface $merchantFacade,
+        MerchantRegistrationConfig $config,
     ) {
         $this->storeFacade = $storeFacade;
         $this->localeFacade = $localeFacade;
         $this->utilTextService = $utilTextService;
         $this->merchantFacade = $merchantFacade;
+        $this->config = $config;
     }
 
     /**
@@ -109,19 +113,29 @@ class MerchantCreator implements MerchantCreatorInterface
         $localeFacade = $this->localeFacade;
 
         if ($merchantTransfer->getName()) {
-            $merchantTransfer->addUrl(
-                (new UrlTransfer())
-                    ->setUrl('/en/merchant/' . $utilTextService->generateSlug($merchantTransfer->getName()))
-                    ->setFkLocale($localeFacade->getLocale('en_US')->getIdLocale()),
-            );
-
-            $merchantTransfer->addUrl(
-                (new UrlTransfer())
-                    ->setUrl('/de/merchant/' . $utilTextService->generateSlug($merchantTransfer->getName()))
-                    ->setFkLocale($localeFacade->getLocale('de_DE')->getIdLocale()),
-            );
+            foreach ($this->localeFacade->getLocaleCollection() as $locale) {
+                $urlPrefix = $this->getLocalizedUrlPrefix($locale);
+                $merchantTransfer->addUrl(
+                    (new UrlTransfer())
+                        ->setUrl($urlPrefix . $utilTextService->generateSlug($merchantTransfer->getName()))
+                        ->setFkLocale($locale->getIdLocale())
+                );
+            }
         }
 
         return $merchantTransfer;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\LocaleTransfer $localeTransfer
+     *
+     * @return string
+     */
+    protected function getLocalizedUrlPrefix(LocaleTransfer $localeTransfer): string
+    {
+        $localeNameParts = explode('_', $localeTransfer->getLocaleName());
+        $languageCode = $localeNameParts[0];
+
+        return '/' . $languageCode . '/' . $this->config->getMerchantUrlPrefix() . '/';
     }
 }
