@@ -45,6 +45,7 @@ class MerchantCreator implements MerchantCreatorInterface
      * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
      * @param \Spryker\Service\UtilText\UtilTextServiceInterface $utilTextService
      * @param \Spryker\Zed\Merchant\Business\MerchantFacadeInterface $merchantFacade
+     * @param \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig $config
      */
     public function __construct(
         StoreFacadeInterface $storeFacade,
@@ -118,7 +119,7 @@ class MerchantCreator implements MerchantCreatorInterface
                 $merchantTransfer->addUrl(
                     (new UrlTransfer())
                         ->setUrl($urlPrefix . $utilTextService->generateSlug($merchantTransfer->getName()))
-                        ->setFkLocale($locale->getIdLocale())
+                        ->setFkLocale($locale->getIdLocale()),
                 );
             }
         }
