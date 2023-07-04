@@ -66,22 +66,18 @@ class MerchantRegistrationMailTypePlugin extends AbstractPlugin implements MailT
      */
     public function build(MailTransfer $mailTransfer): MailTransfer
     {
-        return $mailTransfer
-            ->setSender($this->useDefaultSender())
+        return $mailTransfer->setSender($this->useDefaultSender())
             ->setSubject(static::GLOSSARY_KEY_MAIL_SUBJECT)
             ->addTemplate(
-                (new MailTemplateTransfer())
-                    ->setName(static::MAIL_TEMPLATE_HTML)
+                (new MailTemplateTransfer())->setName(static::MAIL_TEMPLATE_HTML)
                     ->setIsHtml(true),
             )
             ->addTemplate(
-                (new MailTemplateTransfer())
-                    ->setName(static::MAIL_TEMPLATE_TEXT)
+                (new MailTemplateTransfer())->setName(static::MAIL_TEMPLATE_TEXT)
                     ->setIsHtml(false),
             )
             ->addRecipient(
-                (new MailRecipientTransfer())
-                    ->setEmail($this->getConfig()->getMerchantRegistrationRecipientEmail())
+                (new MailRecipientTransfer())->setEmail($this->getConfig()->getMerchantRegistrationRecipientEmail())
                     ->setName($this->getConfig()->getMerchantRegistrationRecipientName()),
             );
     }
@@ -96,8 +92,7 @@ class MerchantRegistrationMailTypePlugin extends AbstractPlugin implements MailT
         $senderEmail = $this->getFactory()->getGlossaryFacade()->translate('mail.sender.email');
         $senderName = $this->getFactory()->getGlossaryFacade()->translate('mail.sender.name');
 
-        $mailSenderTransfer
-            ->setEmail($senderEmail)
+        $mailSenderTransfer->setEmail($senderEmail)
             ->setName($senderName);
 
         return $mailSenderTransfer;
