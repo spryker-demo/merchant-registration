@@ -13,6 +13,7 @@
         "spryker/mail-extension": "^1.0.0",
         "spryker/merchant": "^3.5.1",
         "spryker/merchant-user": "^1.1.0",
+        "spryker/state-machine": "^2.16.0",
         "spryker/store": "^1.16.1",
         "spryker/user": "^3.14.1",
         "spryker/util-text": "^1.5.1",

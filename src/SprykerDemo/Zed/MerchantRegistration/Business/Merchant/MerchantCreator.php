@@ -10,6 +10,7 @@ namespace SprykerDemo\Zed\MerchantRegistration\Business\Merchant;
 use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
+use Generated\Shared\Transfer\StateMachineProcessTransfer;
 use Generated\Shared\Transfer\StoreRelationTransfer;
 use Generated\Shared\Transfer\UrlTransfer;
 use Spryker\Service\UtilText\UtilTextServiceInterface;

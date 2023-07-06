@@ -14,6 +14,7 @@ use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Mail\Business\MailFacadeInterface;
 use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
 use Spryker\Zed\MerchantUser\Business\MerchantUserFacadeInterface;
+use Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
 use Spryker\Zed\User\Business\UserFacadeInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreator;
@@ -67,6 +68,7 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
             $this->getLocaleFacade(),
             $this->getUtilTextService(),
             $this->getMerchantFacade(),
+            $this->getStateMachineFacade(),
             $this->getConfig(),
         );
     }
@@ -155,5 +157,13 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     public function getPropelMerchantQuery(): SpyMerchantQuery
     {
         return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::PROPEL_MERCHANT_QUERY);
+    }
+
+    /**
+     * @return \Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface
+     */
+    public function getStateMachineFacade(): StateMachineFacadeInterface
+    {
+        return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::FACADE_STATE_MACHINE);
     }
 }

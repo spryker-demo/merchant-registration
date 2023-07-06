@@ -59,6 +59,11 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     public const PROPEL_MERCHANT_QUERY = 'PROPEL_MERCHANT_QUERY';
 
     /**
+     * @var string
+     */
+    public const FACADE_STATE_MACHINE = 'FACADE_STATE_MACHINE';
+
+    /**
      * @param \Spryker\Zed\Kernel\Container $container
      *
      * @return \Spryker\Zed\Kernel\Container
@@ -74,6 +79,7 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
         $container = $this->addUtilTextService($container);
         $container = $this->addMerchantFacade($container);
         $container = $this->addPropelMerchantQuery($container);
+        $container = $this->addStateMachineFacade($container);
 
         return $container;
     }
@@ -212,6 +218,20 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     {
         $container->set(static::PROPEL_MERCHANT_QUERY, function (Container $container) {
             return SpyMerchantQuery::create();
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addStateMachineFacade(Container $container): Container
+    {
+        $container->set(static::FACADE_STATE_MACHINE, function (Container $container) {
+            return $container->getLocator()->stateMachine()->facade();
         });
 
         return $container;
