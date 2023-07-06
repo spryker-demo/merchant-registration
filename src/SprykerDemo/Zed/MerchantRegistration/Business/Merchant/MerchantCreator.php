@@ -15,6 +15,7 @@ use Generated\Shared\Transfer\UrlTransfer;
 use Spryker\Service\UtilText\UtilTextServiceInterface;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
+use Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
 use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig;
 
@@ -41,10 +42,21 @@ class MerchantCreator implements MerchantCreatorInterface
     protected MerchantFacadeInterface $merchantFacade;
 
     /**
+     * @var \Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface
+     */
+    protected StateMachineFacadeInterface $stateMachineFacade;
+
+    /**
+     * @var \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig
+     */
+    protected MerchantRegistrationConfig $merchantRegistrationConfig;
+
+    /**
      * @param \Spryker\Zed\Store\Business\StoreFacadeInterface $storeFacade
      * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
      * @param \Spryker\Service\UtilText\UtilTextServiceInterface $utilTextService
      * @param \Spryker\Zed\Merchant\Business\MerchantFacadeInterface $merchantFacade
+     * @param \Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface $stateMachineFacade
      * @param \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig $config
      */
     public function __construct(
@@ -52,12 +64,14 @@ class MerchantCreator implements MerchantCreatorInterface
         LocaleFacadeInterface $localeFacade,
         UtilTextServiceInterface $utilTextService,
         MerchantFacadeInterface $merchantFacade,
+        StateMachineFacadeInterface $stateMachineFacade,
         MerchantRegistrationConfig $config,
     ) {
         $this->storeFacade = $storeFacade;
         $this->localeFacade = $localeFacade;
         $this->utilTextService = $utilTextService;
         $this->merchantFacade = $merchantFacade;
+        $this->stateMachineFacade = $stateMachineFacade;
         $this->config = $config;
     }
 
@@ -70,8 +84,25 @@ class MerchantCreator implements MerchantCreatorInterface
     {
         $merchantTransfer = $this->setStoreIdsByStoreName($merchantTransfer);
         $merchantTransfer = $this->expandMerchantWithUrls($merchantTransfer);
+        $merchantTransfer = $this->setFkStateMachineProcess($merchantTransfer);
 
         return $this->merchantFacade->createMerchant($merchantTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
+     *
+     * @return \Generated\Shared\Transfer\MerchantTransfer
+     */
+    protected function setFkStateMachineProcess(MerchantTransfer $merchantTransfer): MerchantTransfer
+    {
+        $merchantTransfer->setFkStateMachineProcess(
+            $this->stateMachineFacade->getStateMachineProcessId(
+                (new StateMachineProcessTransfer())->setProcessName($this->config->getMerchantOmsDefaultProcessName()),
+            ),
+        );
+
+        return $merchantTransfer;
     }
 
     /**

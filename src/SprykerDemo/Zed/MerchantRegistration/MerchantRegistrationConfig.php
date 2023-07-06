@@ -19,6 +19,21 @@ class MerchantRegistrationConfig extends AbstractBundleConfig
     protected const PREFIX_MERCHANT_URL = 'merchant';
 
     /**
+     * @var string
+     */
+    protected const MERCHANT_OMS_DEFAULT_PROCESS_NAME = 'MerchantDefaultStateMachine';
+
+    /**
+     * @api
+     *
+     * @return string
+     */
+    public function getMerchantOmsDefaultProcessName(): string
+    {
+        return static::MERCHANT_OMS_DEFAULT_PROCESS_NAME;
+    }
+
+    /**
      * @api
      *
      * @return string
