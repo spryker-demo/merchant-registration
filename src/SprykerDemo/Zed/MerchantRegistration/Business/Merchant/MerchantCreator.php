@@ -50,7 +50,7 @@ class MerchantCreator implements MerchantCreatorInterface
     /**
      * @var \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig
      */
-    protected MerchantRegistrationConfig $merchantRegistrationConfig;
+    protected MerchantRegistrationConfig $config;
 
     /**
      * @param \Spryker\Zed\Store\Business\StoreFacadeInterface $storeFacade
@@ -166,6 +166,10 @@ class MerchantCreator implements MerchantCreatorInterface
      */
     protected function getLocalizedUrlPrefix(LocaleTransfer $localeTransfer): string
     {
+        if (!$localeTransfer->getLocaleName()) {
+            return '/';
+        }
+
         $localeNameParts = explode('_', $localeTransfer->getLocaleName());
         $languageCode = $localeNameParts[0];
 
