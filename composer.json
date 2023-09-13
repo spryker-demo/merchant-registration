@@ -8,7 +8,7 @@
         "spryker/application": "^3.30.1",
         "spryker/glossary": "^3.11.6",
         "spryker/kernel": "^3.30.0",
-        "spryker/locale": "^3.8.1",
+        "spryker/locale": "^4.1.0",
         "spryker/mail": "^4.10.0",
         "spryker/mail-extension": "^1.0.0",
         "spryker/merchant": "^3.5.1",
