@@ -216,9 +216,9 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
      */
     protected function addPropelMerchantQuery(Container $container): Container
     {
-        $container->set(static::PROPEL_MERCHANT_QUERY, function (Container $container) {
+        $container->set(static::PROPEL_MERCHANT_QUERY, $container->factory(function () {
             return SpyMerchantQuery::create();
-        });
+        }));
 
         return $container;
     }
