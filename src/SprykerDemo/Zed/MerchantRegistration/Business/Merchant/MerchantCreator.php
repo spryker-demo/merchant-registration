@@ -66,7 +66,7 @@ class MerchantCreator implements MerchantCreatorInterface
         UtilTextServiceInterface $utilTextService,
         MerchantFacadeInterface $merchantFacade,
         StateMachineFacadeInterface $stateMachineFacade,
-        MerchantRegistrationConfig $config,
+        MerchantRegistrationConfig $config
     ) {
         $this->storeFacade = $storeFacade;
         $this->localeFacade = $localeFacade;
