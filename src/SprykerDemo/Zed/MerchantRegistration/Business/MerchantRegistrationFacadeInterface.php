@@ -7,7 +7,6 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business;
 
-use Generated\Shared\Transfer\MerchantCriteriaTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 
@@ -27,14 +26,14 @@ interface MerchantRegistrationFacadeInterface
 
     /**
      * Specification:
-     * - Finds merchant according to the criteria sent in merchantCriteriaTransfer.
-     * - Returns an empty MerchantTransfer if no available statuses exist
+     * - Validates merchant data before creating new merchant.
+     * - Returns `MerchantResponseTransfer` with error messages if exists.
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
+     * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
      *
-     * @return \Generated\Shared\Transfer\MerchantTransfer|null
+     * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    public function findMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer;
+    public function validateMerchant(MerchantTransfer $merchantTransfer): MerchantResponseTransfer;
 }

@@ -7,7 +7,6 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business;
 
-use Generated\Shared\Transfer\MerchantCriteriaTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Spryker\Zed\Kernel\Business\AbstractFacade;
@@ -38,14 +37,14 @@ class MerchantRegistrationFacade extends AbstractFacade implements MerchantRegis
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\MerchantCriteriaTransfer $merchantCriteriaTransfer
+     * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
      *
-     * @return \Generated\Shared\Transfer\MerchantTransfer|null
+     * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    public function findMerchant(MerchantCriteriaTransfer $merchantCriteriaTransfer): ?MerchantTransfer
+    public function validateMerchant(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
         return $this->getFactory()
-            ->createMerchantFinder()
-            ->find($merchantCriteriaTransfer);
+            ->createMerchantValidator()
+            ->validate($merchantTransfer);
     }
 }

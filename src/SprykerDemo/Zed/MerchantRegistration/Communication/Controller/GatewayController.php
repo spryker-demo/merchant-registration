@@ -8,7 +8,6 @@
 namespace SprykerDemo\Zed\MerchantRegistration\Communication\Controller;
 
 use Generated\Shared\Transfer\MerchantCriteriaTransfer;
-use Generated\Shared\Transfer\MerchantErrorTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractGatewayController;
@@ -30,7 +29,7 @@ class GatewayController extends AbstractGatewayController
      */
     public function registerMerchantAction(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
     {
-        $merchantResponseTransfer = $this->checkMerchantUniqueConstraint($merchantTransfer);
+        $merchantResponseTransfer = $this->getFacade()->validateMerchant($merchantTransfer);
 
         $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
         $merchantCriteriaTransfer->setName($merchantTransfer->getName());
@@ -40,29 +39,5 @@ class GatewayController extends AbstractGatewayController
         }
 
         return $this->getFacade()->registerMerchant($merchantTransfer);
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\MerchantTransfer $merchantTransfer
-     *
-     * @return \Generated\Shared\Transfer\MerchantResponseTransfer
-     */
-    protected function checkMerchantUniqueConstraint(MerchantTransfer $merchantTransfer): MerchantResponseTransfer
-    {
-        $merchantCriteriaTransfer = new MerchantCriteriaTransfer();
-        $merchantCriteriaTransfer->setEmail($merchantTransfer->getEmail());
-        $merchantCriteriaTransfer->setName($merchantTransfer->getName());
-
-        $merchant = $this->getFacade()->findMerchant($merchantCriteriaTransfer);
-        $merchantResponseTransfer = new MerchantResponseTransfer();
-        $merchantResponseTransfer->setMerchant($merchantTransfer);
-
-        if ($merchant) {
-            $merchantErrorTransfer = new MerchantErrorTransfer();
-            $merchantErrorTransfer->setMessage(static::VALIDATION_MESSAGE);
-            $merchantResponseTransfer->addError($merchantErrorTransfer);
-        }
-
-        return $merchantResponseTransfer;
     }
 }

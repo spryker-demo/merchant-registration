@@ -51,17 +51,17 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     /**
      * @var string
      */
-    public const SERVICE_UTIL_TEXT = 'SERVICE_UTIL_TEXT';
-
-    /**
-     * @var string
-     */
     public const PROPEL_MERCHANT_QUERY = 'PROPEL_MERCHANT_QUERY';
 
     /**
      * @var string
      */
     public const FACADE_STATE_MACHINE = 'FACADE_STATE_MACHINE';
+
+    /**
+     * @var string
+     */
+    public const FACADE_URL = 'FACADE_URL';
 
     /**
      * @param \Spryker\Zed\Kernel\Container $container
@@ -76,10 +76,10 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
         $container = $this->addUserFacade($container);
         $container = $this->addMerchantUserFacade($container);
         $container = $this->addMailFacade($container);
-        $container = $this->addUtilTextService($container);
         $container = $this->addMerchantFacade($container);
         $container = $this->addPropelMerchantQuery($container);
         $container = $this->addStateMachineFacade($container);
+        $container = $this->addUrlFacade($container);
 
         return $container;
     }
@@ -172,20 +172,6 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
      *
      * @return \Spryker\Zed\Kernel\Container
      */
-    protected function addUtilTextService(Container $container): Container
-    {
-        $container->set(static::SERVICE_UTIL_TEXT, function (Container $container) {
-            return $container->getLocator()->utilText()->service();
-        });
-
-        return $container;
-    }
-
-    /**
-     * @param \Spryker\Zed\Kernel\Container $container
-     *
-     * @return \Spryker\Zed\Kernel\Container
-     */
     protected function addMerchantFacade(Container $container): Container
     {
         $container->set(static::FACADE_MERCHANT, function (Container $container) {
@@ -232,6 +218,20 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     {
         $container->set(static::FACADE_STATE_MACHINE, function (Container $container) {
             return $container->getLocator()->stateMachine()->facade();
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addUrlFacade(Container $container): Container
+    {
+        $container->set(static::FACADE_URL, function (Container $container) {
+            return $container->getLocator()->url()->facade();
         });
 
         return $container;

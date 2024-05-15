@@ -8,7 +8,6 @@
 namespace SprykerDemo\Zed\MerchantRegistration\Business;
 
 use Orm\Zed\Merchant\Persistence\SpyMerchantQuery;
-use Spryker\Service\UtilText\UtilTextServiceInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Mail\Business\MailFacadeInterface;
@@ -16,6 +15,7 @@ use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
 use Spryker\Zed\MerchantUser\Business\MerchantUserFacadeInterface;
 use Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
+use Spryker\Zed\Url\Business\UrlFacadeInterface;
 use Spryker\Zed\User\Business\UserFacadeInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreator;
 use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantCreatorInterface;
@@ -25,6 +25,8 @@ use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegi
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailer;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailerInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantValidator;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantValidatorInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreator;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface;
 use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationDependencyProvider;
@@ -34,6 +36,17 @@ use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationDependencyProvider;
  */
 class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
 {
+    /**
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantValidatorInterface
+     */
+    public function createMerchantValidator(): MerchantValidatorInterface
+    {
+        return new MerchantValidator(
+            $this->getUrlFacade(),
+            $this->createMerchantFinder(),
+        );
+    }
+
     /**
      * @return \SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarInterface
      */
@@ -66,7 +79,6 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
         return new MerchantCreator(
             $this->getStoreFacade(),
             $this->getLocaleFacade(),
-            $this->getUtilTextService(),
             $this->getMerchantFacade(),
             $this->getStateMachineFacade(),
             $this->getConfig(),
@@ -136,14 +148,6 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \Spryker\Service\UtilText\UtilTextServiceInterface
-     */
-    public function getUtilTextService(): UtilTextServiceInterface
-    {
-        return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::SERVICE_UTIL_TEXT);
-    }
-
-    /**
      * @return \Spryker\Zed\Merchant\Business\MerchantFacadeInterface
      */
     public function getMerchantFacade(): MerchantFacadeInterface
@@ -165,5 +169,13 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     public function getStateMachineFacade(): StateMachineFacadeInterface
     {
         return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::FACADE_STATE_MACHINE);
+    }
+
+    /**
+     * @return \Spryker\Zed\Url\Business\UrlFacadeInterface
+     */
+    public function getUrlFacade(): UrlFacadeInterface
+    {
+        return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::FACADE_URL);
     }
 }
