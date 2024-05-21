@@ -86,6 +86,7 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
         $container = $this->addPropelMerchantQuery($container);
         $container = $this->addStateMachineFacade($container);
         $container = $this->addUrlFacade($container);
+        $container = $this->addGlossaryFacade($container);
 
         return $container;
     }

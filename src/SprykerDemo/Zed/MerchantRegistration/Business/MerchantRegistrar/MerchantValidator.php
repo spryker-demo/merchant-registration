@@ -13,6 +13,7 @@ use Generated\Shared\Transfer\MerchantErrorTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Generated\Shared\Transfer\UrlTransfer;
+use Spryker\Zed\Glossary\Business\GlossaryFacadeInterface;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Url\Business\UrlFacadeInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinderInterface;
@@ -23,12 +24,12 @@ class MerchantValidator implements MerchantValidatorInterface
     /**
      * @var string
      */
-    public const ERROR_MESSAGE_PROVIDED_EMAIL_OR_COMPANY_NAME_IS_ALREADY_TAKEN = 'Merchant email and Company name must be unique!';
+    public const ERROR_MESSAGE_PROVIDED_EMAIL_OR_COMPANY_NAME_IS_ALREADY_TAKEN = 'merchant.register-page.validation.company_name_or_email_not_unique';
 
     /**
      * @var string
      */
-    protected const ERROR_MESSAGE_PROVIDED_URL_IS_ALREADY_TAKEN = 'Provided URL "%s" is already taken.';
+    protected const ERROR_MESSAGE_PROVIDED_URL_IS_ALREADY_TAKEN = 'merchant.register-page.validation.url_not_unique';
 
     /**
      * @var \Spryker\Zed\Url\Business\UrlFacadeInterface
@@ -46,6 +47,11 @@ class MerchantValidator implements MerchantValidatorInterface
     protected LocaleFacadeInterface $localeFacade;
 
     /**
+     * @var \Spryker\Zed\Glossary\Business\GlossaryFacadeInterface
+     */
+    protected GlossaryFacadeInterface $glossaryFacade;
+
+    /**
      * @var \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig
      */
     protected MerchantRegistrationConfig $config;
@@ -53,17 +59,20 @@ class MerchantValidator implements MerchantValidatorInterface
     /**
      * @param \Spryker\Zed\Url\Business\UrlFacadeInterface $urlFacade
      * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
+     * @param \Spryker\Zed\Glossary\Business\GlossaryFacadeInterface $glossaryFacade
      * @param \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinderInterface $merchantFinder
      * @param \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig $config
      */
     public function __construct(
         UrlFacadeInterface $urlFacade,
         LocaleFacadeInterface $localeFacade,
+        GlossaryFacadeInterface $glossaryFacade,
         MerchantFinderInterface $merchantFinder,
         MerchantRegistrationConfig $config
     ) {
         $this->urlFacade = $urlFacade;
         $this->localeFacade = $localeFacade;
+        $this->glossaryFacade = $glossaryFacade;
         $this->merchantFinder = $merchantFinder;
         $this->config = $config;
     }
@@ -142,7 +151,7 @@ class MerchantValidator implements MerchantValidatorInterface
         }
 
         $merchantErrorTransfer = new MerchantErrorTransfer();
-        $merchantErrorTransfer->setMessage(sprintf(static::ERROR_MESSAGE_PROVIDED_URL_IS_ALREADY_TAKEN, $urlTransfer->getUrl()));
+        $merchantErrorTransfer->setMessage(sprintf($this->glossaryFacade->translate(static::ERROR_MESSAGE_PROVIDED_URL_IS_ALREADY_TAKEN), $urlTransfer->getUrl()));
         $merchantResponseTransfer->addError($merchantErrorTransfer);
 
         return $merchantResponseTransfer;

@@ -9,6 +9,7 @@ namespace SprykerDemo\Zed\MerchantRegistration\Business;
 
 use Orm\Zed\Merchant\Persistence\SpyMerchantQuery;
 use Spryker\Service\UtilText\UtilTextServiceInterface;
+use Spryker\Zed\Glossary\Business\GlossaryFacadeInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Mail\Business\MailFacadeInterface;
@@ -45,6 +46,7 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
         return new MerchantValidator(
             $this->getUrlFacade(),
             $this->getLocaleFacade(),
+            $this->getGlossaryFacade(),
             $this->createMerchantFinder(),
             $this->getConfig(),
         );
@@ -189,5 +191,13 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     public function getUrlFacade(): UrlFacadeInterface
     {
         return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::FACADE_URL);
+    }
+
+    /**
+     * @return \Spryker\Zed\Glossary\Business\GlossaryFacadeInterface
+     */
+    public function getGlossaryFacade(): GlossaryFacadeInterface
+    {
+        return $this->getProvidedDependency(MerchantRegistrationDependencyProvider::FACADE_GLOSSARY);
     }
 }
