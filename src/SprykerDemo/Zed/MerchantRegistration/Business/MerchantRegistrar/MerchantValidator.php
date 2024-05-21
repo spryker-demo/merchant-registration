@@ -7,14 +7,16 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar;
 
-use ArrayObject;
+use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\MerchantCriteriaTransfer;
 use Generated\Shared\Transfer\MerchantErrorTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Generated\Shared\Transfer\UrlTransfer;
+use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Url\Business\UrlFacadeInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinderInterface;
+use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig;
 
 class MerchantValidator implements MerchantValidatorInterface
 {
@@ -39,15 +41,31 @@ class MerchantValidator implements MerchantValidatorInterface
     protected MerchantFinderInterface $merchantFinder;
 
     /**
+     * @var \Spryker\Zed\Locale\Business\LocaleFacadeInterface
+     */
+    protected LocaleFacadeInterface $localeFacade;
+
+    /**
+     * @var \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig
+     */
+    protected MerchantRegistrationConfig $config;
+
+    /**
      * @param \Spryker\Zed\Url\Business\UrlFacadeInterface $urlFacade
+     * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
      * @param \SprykerDemo\Zed\MerchantRegistration\Business\Merchant\MerchantFinderInterface $merchantFinder
+     * @param \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig $config
      */
     public function __construct(
         UrlFacadeInterface $urlFacade,
-        MerchantFinderInterface $merchantFinder
+        LocaleFacadeInterface $localeFacade,
+        MerchantFinderInterface $merchantFinder,
+        MerchantRegistrationConfig $config
     ) {
         $this->urlFacade = $urlFacade;
+        $this->localeFacade = $localeFacade;
         $this->merchantFinder = $merchantFinder;
+        $this->config = $config;
     }
 
     /**
@@ -65,7 +83,11 @@ class MerchantValidator implements MerchantValidatorInterface
         $merchantResponseTransfer->setMerchant($merchantTransfer);
         $merchantResponseTransfer = $this->validateMerchantData($merchantCriteriaTransfer, $merchantResponseTransfer);
 
-        return $this->validateUrlCollection($merchantTransfer->getUrlCollection(), $merchantResponseTransfer);
+        if ($merchantTransfer->getUrl()) {
+            $merchantResponseTransfer = $this->validateUrlCollection($merchantTransfer->getUrl(), $merchantResponseTransfer);
+        }
+
+        return $merchantResponseTransfer;
     }
 
     /**
@@ -90,15 +112,15 @@ class MerchantValidator implements MerchantValidatorInterface
     }
 
     /**
-     * @param \ArrayObject<\Generated\Shared\Transfer\UrlTransfer> $urlCollectionTransfer
+     * @param string $url
      * @param \Generated\Shared\Transfer\MerchantResponseTransfer $merchantResponseTransfer
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    protected function validateUrlCollection(ArrayObject $urlCollectionTransfer, MerchantResponseTransfer $merchantResponseTransfer): MerchantResponseTransfer
+    protected function validateUrlCollection(string $url, MerchantResponseTransfer $merchantResponseTransfer): MerchantResponseTransfer
     {
-        /** @var \Generated\Shared\Transfer\UrlTransfer $urlTransfer */
-        foreach ($urlCollectionTransfer as $urlTransfer) {
+        foreach ($this->localeFacade->getLocaleCollection() as $localeTransfer) {
+            $urlTransfer = $this->getUrlTransfer($url, $localeTransfer);
             $merchantResponseTransfer = $this->validateUrl($urlTransfer, $merchantResponseTransfer);
         }
 
@@ -124,5 +146,36 @@ class MerchantValidator implements MerchantValidatorInterface
         $merchantResponseTransfer->addError($merchantErrorTransfer);
 
         return $merchantResponseTransfer;
+    }
+
+    /**
+     * @param string $url
+     * @param \Generated\Shared\Transfer\LocaleTransfer $localeTransfer
+     *
+     * @return \Generated\Shared\Transfer\UrlTransfer
+     */
+    protected function getUrlTransfer(string $url, LocaleTransfer $localeTransfer): UrlTransfer
+    {
+        $urlTransfer = new UrlTransfer();
+        $urlPrefix = $this->getLocalizedUrlPrefix($localeTransfer->getLocaleName());
+        $urlTransfer->setUrl($urlPrefix . $url);
+
+        return $urlTransfer;
+    }
+
+    /**
+     * @param string|null $locale
+     *
+     * @return string
+     */
+    protected function getLocalizedUrlPrefix(?string $locale): string
+    {
+        if (!$locale) {
+            return '';
+        }
+        $localeNameParts = explode('_', $locale);
+        $languageCode = $localeNameParts[0];
+
+        return '/' . $languageCode . '/' . $this->config->getMerchantUrlPrefix() . '/';
     }
 }

@@ -7,12 +7,13 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business\Merchant;
 
-use ArrayObject;
 use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Generated\Shared\Transfer\StateMachineProcessTransfer;
 use Generated\Shared\Transfer\StoreRelationTransfer;
+use Generated\Shared\Transfer\UrlTransfer;
+use Spryker\Service\UtilText\UtilTextServiceInterface;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
 use Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface;
@@ -32,6 +33,11 @@ class MerchantCreator implements MerchantCreatorInterface
     protected LocaleFacadeInterface $localeFacade;
 
     /**
+     * @var \Spryker\Service\UtilText\UtilTextServiceInterface
+     */
+    protected UtilTextServiceInterface $utilTextService;
+
+    /**
      * @var \Spryker\Zed\Merchant\Business\MerchantFacadeInterface
      */
     protected MerchantFacadeInterface $merchantFacade;
@@ -49,6 +55,7 @@ class MerchantCreator implements MerchantCreatorInterface
     /**
      * @param \Spryker\Zed\Store\Business\StoreFacadeInterface $storeFacade
      * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
+     * @param \Spryker\Service\UtilText\UtilTextServiceInterface $utilTextService
      * @param \Spryker\Zed\Merchant\Business\MerchantFacadeInterface $merchantFacade
      * @param \Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface $stateMachineFacade
      * @param \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig $config
@@ -56,12 +63,14 @@ class MerchantCreator implements MerchantCreatorInterface
     public function __construct(
         StoreFacadeInterface $storeFacade,
         LocaleFacadeInterface $localeFacade,
+        UtilTextServiceInterface $utilTextService,
         MerchantFacadeInterface $merchantFacade,
         StateMachineFacadeInterface $stateMachineFacade,
         MerchantRegistrationConfig $config
     ) {
         $this->storeFacade = $storeFacade;
         $this->localeFacade = $localeFacade;
+        $this->utilTextService = $utilTextService;
         $this->merchantFacade = $merchantFacade;
         $this->stateMachineFacade = $stateMachineFacade;
         $this->config = $config;
@@ -133,16 +142,16 @@ class MerchantCreator implements MerchantCreatorInterface
      */
     protected function expandMerchantWithUrls(MerchantTransfer $merchantTransfer): MerchantTransfer
     {
-        $requestedUrlCollection = $merchantTransfer->getUrlCollection();
-        $merchantTransfer->setUrlCollection(new ArrayObject());
-        if ($merchantTransfer->getName()) {
-
-            /** @var \Generated\Shared\Transfer\UrlTransfer $urlTransfer */
-            foreach ($requestedUrlCollection as $urlTransfer) {
-                if ($urlTransfer->getLocaleName()) {
-                    $urlTransfer->setFkLocale($this->localeFacade->getLocale($urlTransfer->getLocaleName())->getIdLocale());
-                    $merchantTransfer->addUrl($urlTransfer);
-                }
+        $utilTextService = $this->utilTextService;
+        $localeFacade = $this->localeFacade;
+        if ($merchantTransfer->getUrl()) {
+            foreach ($this->localeFacade->getLocaleCollection() as $locale) {
+                $urlPrefix = $this->getLocalizedUrlPrefix($locale);
+                $merchantTransfer->addUrl(
+                    (new UrlTransfer())
+                        ->setUrl($urlPrefix . $utilTextService->generateSlug((string)$merchantTransfer->getUrl()))
+                        ->setFkLocale($locale->getIdLocale()),
+                );
             }
         }
 

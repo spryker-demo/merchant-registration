@@ -26,6 +26,11 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     /**
      * @var string
      */
+    public const SERVICE_UTIL_TEXT = 'SERVICE_UTIL_TEXT';
+
+    /**
+     * @var string
+     */
     public const FACADE_GLOSSARY = 'FACADE_GLOSSARY';
 
     /**
@@ -73,6 +78,7 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
         $container = parent::provideBusinessLayerDependencies($container);
         $container = $this->addStoreFacade($container);
         $container = $this->addLocaleFacade($container);
+        $container = $this->addUtilTextService($container);
         $container = $this->addUserFacade($container);
         $container = $this->addMerchantUserFacade($container);
         $container = $this->addMailFacade($container);
@@ -134,6 +140,20 @@ class MerchantRegistrationDependencyProvider extends AbstractBundleDependencyPro
     {
         $container->set(static::FACADE_LOCALE, function (Container $container) {
             return $container->getLocator()->locale()->facade();
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addUtilTextService(Container $container): Container
+    {
+        $container->set(static::SERVICE_UTIL_TEXT, function (Container $container) {
+            return $container->getLocator()->utilText()->service();
         });
 
         return $container;

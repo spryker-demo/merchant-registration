@@ -17,6 +17,7 @@
         "spryker/store": "^1.16.1",
         "spryker/url": "^3.13.0",
         "spryker/user": "^3.14.1",
+        "spryker/util-text": "^ 1.6.0",
         "spryker/zed-request": "^3.18.1"
     },
     "require-dev": {
