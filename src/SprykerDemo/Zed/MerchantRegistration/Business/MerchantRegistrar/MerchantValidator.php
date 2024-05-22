@@ -121,13 +121,16 @@ class MerchantValidator implements MerchantValidatorInterface
     }
 
     /**
-     * @param string $url
+     * @param string|null $url
      * @param \Generated\Shared\Transfer\MerchantResponseTransfer $merchantResponseTransfer
      *
      * @return \Generated\Shared\Transfer\MerchantResponseTransfer
      */
-    protected function validateUrlCollection(string $url, MerchantResponseTransfer $merchantResponseTransfer): MerchantResponseTransfer
+    protected function validateUrlCollection(?string $url, MerchantResponseTransfer $merchantResponseTransfer): MerchantResponseTransfer
     {
+        if (!$url) {
+            return $merchantResponseTransfer;
+        }
         foreach ($this->localeFacade->getLocaleCollection() as $localeTransfer) {
             $urlTransfer = $this->getUrlTransfer($url, $localeTransfer);
             $merchantResponseTransfer = $this->validateUrl($urlTransfer, $merchantResponseTransfer);

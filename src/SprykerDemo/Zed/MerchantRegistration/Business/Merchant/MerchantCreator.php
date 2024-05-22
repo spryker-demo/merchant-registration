@@ -145,11 +145,12 @@ class MerchantCreator implements MerchantCreatorInterface
         $utilTextService = $this->utilTextService;
         $localeFacade = $this->localeFacade;
         if ($merchantTransfer->getUrl()) {
+            $url = $merchantTransfer->getUrl()->getUrl() ?: '';
             foreach ($this->localeFacade->getLocaleCollection() as $locale) {
                 $urlPrefix = $this->getLocalizedUrlPrefix($locale);
                 $merchantTransfer->addUrl(
                     (new UrlTransfer())
-                        ->setUrl($urlPrefix . $utilTextService->generateSlug((string)$merchantTransfer->getUrl()->getUrl()))
+                        ->setUrl($urlPrefix . $utilTextService->generateSlug($url))
                         ->setFkLocale($locale->getIdLocale()),
                 );
             }
