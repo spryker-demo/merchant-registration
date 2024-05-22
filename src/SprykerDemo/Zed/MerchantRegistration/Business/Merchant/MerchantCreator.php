@@ -149,7 +149,7 @@ class MerchantCreator implements MerchantCreatorInterface
                 $urlPrefix = $this->getLocalizedUrlPrefix($locale);
                 $merchantTransfer->addUrl(
                     (new UrlTransfer())
-                        ->setUrl($urlPrefix . $utilTextService->generateSlug((string)$merchantTransfer->getUrl()))
+                        ->setUrl($urlPrefix . $utilTextService->generateSlug((string)$merchantTransfer->getUrl()->getUrl()))
                         ->setFkLocale($locale->getIdLocale()),
                 );
             }
