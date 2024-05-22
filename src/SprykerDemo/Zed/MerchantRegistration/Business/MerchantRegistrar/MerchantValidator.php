@@ -93,7 +93,7 @@ class MerchantValidator implements MerchantValidatorInterface
         $merchantResponseTransfer = $this->validateMerchantData($merchantCriteriaTransfer, $merchantResponseTransfer);
 
         if ($merchantTransfer->getUrl()) {
-            $merchantResponseTransfer = $this->validateUrlCollection($merchantTransfer->getUrl(), $merchantResponseTransfer);
+            $merchantResponseTransfer = $this->validateUrlCollection($merchantTransfer->getUrl()->getUrl(), $merchantResponseTransfer);
         }
 
         return $merchantResponseTransfer;
