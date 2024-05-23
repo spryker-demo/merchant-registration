@@ -7,17 +7,14 @@
 
 namespace SprykerDemo\Zed\MerchantRegistration\Business\Merchant;
 
-use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\MerchantResponseTransfer;
 use Generated\Shared\Transfer\MerchantTransfer;
 use Generated\Shared\Transfer\StateMachineProcessTransfer;
 use Generated\Shared\Transfer\StoreRelationTransfer;
-use Generated\Shared\Transfer\UrlTransfer;
-use Spryker\Service\UtilText\UtilTextServiceInterface;
-use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use Spryker\Zed\Merchant\Business\MerchantFacadeInterface;
 use Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface;
 use Spryker\Zed\Store\Business\StoreFacadeInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUrlBuilder\MerchantUrlBuilderInterface;
 use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig;
 
 class MerchantCreator implements MerchantCreatorInterface
@@ -26,16 +23,6 @@ class MerchantCreator implements MerchantCreatorInterface
      * @var \Spryker\Zed\Store\Business\StoreFacadeInterface
      */
     protected StoreFacadeInterface $storeFacade;
-
-    /**
-     * @var \Spryker\Zed\Locale\Business\LocaleFacadeInterface
-     */
-    protected LocaleFacadeInterface $localeFacade;
-
-    /**
-     * @var \Spryker\Service\UtilText\UtilTextServiceInterface
-     */
-    protected UtilTextServiceInterface $utilTextService;
 
     /**
      * @var \Spryker\Zed\Merchant\Business\MerchantFacadeInterface
@@ -53,27 +40,29 @@ class MerchantCreator implements MerchantCreatorInterface
     protected MerchantRegistrationConfig $config;
 
     /**
+     * @var \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUrlBuilder\MerchantUrlBuilderInterface
+     */
+    protected MerchantUrlBuilderInterface $merchantUrlBuilder;
+
+    /**
      * @param \Spryker\Zed\Store\Business\StoreFacadeInterface $storeFacade
-     * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
-     * @param \Spryker\Service\UtilText\UtilTextServiceInterface $utilTextService
      * @param \Spryker\Zed\Merchant\Business\MerchantFacadeInterface $merchantFacade
      * @param \Spryker\Zed\StateMachine\Business\StateMachineFacadeInterface $stateMachineFacade
      * @param \SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationConfig $config
+     * @param \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUrlBuilder\MerchantUrlBuilderInterface $merchantUrlBuilder
      */
     public function __construct(
         StoreFacadeInterface $storeFacade,
-        LocaleFacadeInterface $localeFacade,
-        UtilTextServiceInterface $utilTextService,
         MerchantFacadeInterface $merchantFacade,
         StateMachineFacadeInterface $stateMachineFacade,
-        MerchantRegistrationConfig $config
+        MerchantRegistrationConfig $config,
+        MerchantUrlBuilderInterface $merchantUrlBuilder
     ) {
         $this->storeFacade = $storeFacade;
-        $this->localeFacade = $localeFacade;
-        $this->utilTextService = $utilTextService;
         $this->merchantFacade = $merchantFacade;
         $this->stateMachineFacade = $stateMachineFacade;
         $this->config = $config;
+        $this->merchantUrlBuilder = $merchantUrlBuilder;
     }
 
     /**
@@ -142,37 +131,11 @@ class MerchantCreator implements MerchantCreatorInterface
      */
     protected function expandMerchantWithUrls(MerchantTransfer $merchantTransfer): MerchantTransfer
     {
-        $utilTextService = $this->utilTextService;
-        $localeFacade = $this->localeFacade;
-        if ($merchantTransfer->getUrl()) {
-            $url = $merchantTransfer->getUrl()->getUrl() ?: '';
-            foreach ($this->localeFacade->getLocaleCollection() as $locale) {
-                $urlPrefix = $this->getLocalizedUrlPrefix($locale);
-                $merchantTransfer->addUrl(
-                    (new UrlTransfer())
-                        ->setUrl($urlPrefix . $utilTextService->generateSlug($url))
-                        ->setFkLocale($locale->getIdLocale()),
-                );
-            }
-        }
+        $url = $merchantTransfer->getUrlOrFail()->getUrlOrFail();
+        $merchantTransfer->setUrlCollection(
+            $this->merchantUrlBuilder->buildUrlCollection($url),
+        );
 
         return $merchantTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\LocaleTransfer $localeTransfer
-     *
-     * @return string
-     */
-    protected function getLocalizedUrlPrefix(LocaleTransfer $localeTransfer): string
-    {
-        if (!$localeTransfer->getLocaleName()) {
-            return '/';
-        }
-
-        $localeNameParts = explode('_', $localeTransfer->getLocaleName());
-        $languageCode = $localeNameParts[0];
-
-        return '/' . $languageCode . '/' . $this->config->getMerchantUrlPrefix() . '/';
     }
 }

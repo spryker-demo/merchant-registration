@@ -14,6 +14,8 @@ use SprykerDemo\Shared\MerchantRegistration\MerchantRegistrationConstants;
 class MerchantRegistrationConfig extends AbstractBundleConfig
 {
     /**
+     * @uses \Spryker\Zed\MerchantGui\MerchantGuiConfig::PREFIX_MERCHANT_URL
+     *
      * @var string
      */
     protected const PREFIX_MERCHANT_URL = 'merchant';

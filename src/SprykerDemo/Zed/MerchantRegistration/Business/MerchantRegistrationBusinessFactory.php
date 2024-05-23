@@ -29,6 +29,8 @@ use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegi
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantRegistrarMailerInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantValidator;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantRegistrar\MerchantValidatorInterface;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUrlBuilder\MerchantUrlBuilder;
+use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUrlBuilder\MerchantUrlBuilderInterface;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreator;
 use SprykerDemo\Zed\MerchantRegistration\Business\MerchantUser\MerchantUserCreatorInterface;
 use SprykerDemo\Zed\MerchantRegistration\MerchantRegistrationDependencyProvider;
@@ -45,10 +47,9 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     {
         return new MerchantValidator(
             $this->getUrlFacade(),
-            $this->getLocaleFacade(),
             $this->getGlossaryFacade(),
             $this->createMerchantFinder(),
-            $this->getConfig(),
+            $this->createMerchantUrlBuilder(),
         );
     }
 
@@ -83,11 +84,10 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     {
         return new MerchantCreator(
             $this->getStoreFacade(),
-            $this->getLocaleFacade(),
-            $this->getUtilTextService(),
             $this->getMerchantFacade(),
             $this->getStateMachineFacade(),
             $this->getConfig(),
+            $this->createMerchantUrlBuilder(),
         );
     }
 
@@ -110,6 +110,18 @@ class MerchantRegistrationBusinessFactory extends AbstractBusinessFactory
     {
         return new MerchantFinder(
             $this->getPropelMerchantQuery(),
+        );
+    }
+
+    /**
+     * @return \SprykerDemo\Zed\MerchantRegistration\Business\MerchantUrlBuilder\MerchantUrlBuilderInterface
+     */
+    public function createMerchantUrlBuilder(): MerchantUrlBuilderInterface
+    {
+        return new MerchantUrlBuilder(
+            $this->getLocaleFacade(),
+            $this->getConfig(),
+            $this->getUtilTextService(),
         );
     }
 

@@ -3,6 +3,7 @@
 
     <transfer name="Merchant">
         <property name="password" type="string"/>
+        <property name="url" type="Url"/>
     </transfer>
 
     <transfer name="Mail">
