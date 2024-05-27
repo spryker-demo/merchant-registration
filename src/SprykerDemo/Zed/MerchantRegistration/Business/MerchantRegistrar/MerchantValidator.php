@@ -126,7 +126,13 @@ class MerchantValidator implements MerchantValidatorInterface
     protected function validateUrlCollection(string $url, MerchantResponseTransfer $merchantResponseTransfer): MerchantResponseTransfer
     {
         foreach ($this->merchantUrlBuilder->buildUrlCollection($url) as $urlTransfer) {
-            $merchantResponseTransfer = $this->validateUrl($urlTransfer, $merchantResponseTransfer);
+            if (!$this->validateUrl($urlTransfer, $merchantResponseTransfer)) {
+                $merchantErrorTransfer = new MerchantErrorTransfer();
+                $merchantErrorTransfer->setMessage(sprintf($this->glossaryFacade->translate(static::ERROR_MESSAGE_PROVIDED_URL_IS_ALREADY_TAKEN), $url));
+                $merchantResponseTransfer->addError($merchantErrorTransfer);
+
+                return $merchantResponseTransfer;
+            }
         }
 
         return $merchantResponseTransfer;
@@ -136,20 +142,14 @@ class MerchantValidator implements MerchantValidatorInterface
      * @param \Generated\Shared\Transfer\UrlTransfer $urlTransfer
      * @param \Generated\Shared\Transfer\MerchantResponseTransfer $merchantResponseTransfer
      *
-     * @return \Generated\Shared\Transfer\MerchantResponseTransfer
+     * @return bool
      */
-    protected function validateUrl(UrlTransfer $urlTransfer, MerchantResponseTransfer $merchantResponseTransfer): MerchantResponseTransfer
+    protected function validateUrl(UrlTransfer $urlTransfer, MerchantResponseTransfer $merchantResponseTransfer): bool
     {
-        $existingUrlTransfer = $this->urlFacade->findUrlCaseInsensitive($urlTransfer);
-
-        if ($existingUrlTransfer === null) {
-            return $merchantResponseTransfer;
+        if (!$this->urlFacade->findUrlCaseInsensitive($urlTransfer)) {
+            return true;
         }
 
-        $merchantErrorTransfer = new MerchantErrorTransfer();
-        $merchantErrorTransfer->setMessage(sprintf($this->glossaryFacade->translate(static::ERROR_MESSAGE_PROVIDED_URL_IS_ALREADY_TAKEN), $urlTransfer->getUrl()));
-        $merchantResponseTransfer->addError($merchantErrorTransfer);
-
-        return $merchantResponseTransfer;
+        return false;
     }
 }
