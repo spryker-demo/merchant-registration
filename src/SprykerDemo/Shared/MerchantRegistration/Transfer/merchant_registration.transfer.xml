@@ -7,7 +7,7 @@
     </transfer>
 
     <transfer name="Mail">
-        <property name="merchant" type="Merchant"/>
+        <property name="merchant" type="Merchant" strict="true"/>
         <property name="url" type="string"/>
     </transfer>
 </transfers>
