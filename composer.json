@@ -7,7 +7,7 @@
         "php": ">=8.2",
         "spryker/application": "^3.30.1",
         "spryker/glossary": "^3.11.6",
-        "spryker/kernel": "^3.30.0",
+        "spryker/kernel": "^3.75.0",
         "spryker/locale": "^4.1.0",
         "spryker/mail": "^4.10.0",
         "spryker/mail-extension": "^1.0.0",
